@@ -13,7 +13,11 @@ const createPathStrings = (filename) => {
   console.log(baseFilename);
 
   const fileType = ".PNG";
-  const sides = ["rt1", "left", "up", "down", "center", "rt2"];
+  // const sides = ["front", "back", "up", "down", "right", "left"];
+
+  const sides = ["back", "front", "up", "down", "left", "right"];
+
+  // "right", "left";
   const pathStings = sides.map((side) => {
     return baseFilename + "/" + side + fileType;
   });
