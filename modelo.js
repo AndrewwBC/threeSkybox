@@ -28,7 +28,7 @@ var plight = new THREE.PointLight(0xffffff, 100);
 plight.position.set(10, 10, 10);
 scene.add(plight);
 
-let pokemon;
+let aviao;
 
 const modelPath = "./assets/";
 const mtlFile = "aviao.mtl";
@@ -47,7 +47,7 @@ mtlLoader.setPath(modelPath).load(mtlFile, handleMaterialLoaded);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 
-const pokemonJoystick = { x: null, y: null };
+const aviaoJoystick = { x: null, y: null };
 
 function handleMaterialLoaded(materials) {
   materials.preload();
@@ -56,22 +56,23 @@ function handleMaterialLoaded(materials) {
 }
 
 function handleObjectLoaded(object) {
-  pokemon = object;
-  pokemon.position.x = 1;
-  pokemon.position.y = 1;
+  aviao = object;
+  aviao.position.x = 2;
+  aviao.position.y = 4;
 
-  pokemon.rotateZ(25);
-  pokemon.rotateX(30);
-  pokemon.rotateY(0);
+  aviao.rotateZ(25);
+  aviao.rotateX(30);
+  aviao.rotateY(0);
 
-  pokemon.scale.setScalar(1);
-  scene.add(pokemon);
+  aviao.scale.setScalar(1);
+  scene.add(aviao);
 }
 
 function animate() {
   renderer.render(scene, camera);
   controls.update();
-  movepokemon();
+  moveaviao();
+  movePlane();
   requestAnimationFrame(animate);
 }
 
@@ -87,18 +88,25 @@ createSkyBox("cortadas", 100000).then((grama) => {
 function handleKeyPress(event) {
   switch (event.key) {
     case "ArrowUp":
-      pokemon.position.x += 10;
-      break;
-    case "ArrowDown":
-      pokemon.position.x -= 10;
-      break;
-    case "ArrowLeft":
-      pokemon.position.y -= 10;
+      aviao.rotateY(-0.1);
+      aviao.position.y += 40;
 
       break;
-    case "ArrowRight":
-      pokemon.position.y += 10;
+
+    case "ArrowDown":
+      aviao.rotateY(0.1);
+      aviao.position.x -= 40;
+
       break;
+
+    case "ArrowLeft":
+      aviao.rotateX(25);
+      break;
+
+    case "ArrowRight":
+      aviao.rotateX(32);
+      break;
+
     default:
       break;
   }
@@ -106,28 +114,36 @@ function handleKeyPress(event) {
 
 window.addEventListener("keydown", handleKeyPress);
 
-function movepokemon() {
-  if (pokemon && pokemonJoystick.x && pokemonJoystick.y) {
+function moveaviao() {
+  if (aviao && aviaoJoystick.x && aviaoJoystick.y) {
     let wh = window.innerHeight;
     let ww = window.innerWidth;
 
-    pokemon.rotation.x += (pokemonJoystick.y - wh / 2) / wh / 100;
+    aviao.rotation.x += (aviaoJoystick.y - wh / 2) / wh / 100;
 
-    if (Math.abs(pokemon.position.x) > 1) {
-      pokemon.position.x =
-        1 * (pokemon.position.x / Math.abs(pokemon.position.x));
+    if (Math.abs(aviao.position.x) > 1) {
+      aviao.position.x = 1 * (aviao.position.x / Math.abs(aviao.position.x));
     } else {
-      pokemon.rotation.z -= (pokemonJoystick.x - ww / 2) / ww / 10;
+      aviao.rotation.z -= (aviaoJoystick.x - ww / 2) / ww / 10;
     }
 
-    if (Math.abs(pokemon.rotation.z) != 0) {
-      pokemon.position.x += (pokemonJoystick.x - ww / 2) / ww / 10;
-      pokemon.rotation.y = pokemon.rotation.z / 2.5;
+    if (Math.abs(aviao.rotation.z) != 0) {
+      aviao.position.x += (aviaoJoystick.x - ww / 2) / ww / 10;
+      aviao.rotation.y = aviao.rotation.z / 2.5;
     }
 
-    if (Math.abs(pokemon.rotation.y) > 0.5)
-      pokemon.rotation.y =
-        0.5 * (pokemon.rotation.y / Math.abs(pokemon.rotation.y));
+    if (Math.abs(aviao.rotation.y) > 0.5)
+      aviao.rotation.y = 0.5 * (aviao.rotation.y / Math.abs(aviao.rotation.y));
+  }
+}
+
+function movePlane() {
+  if (aviao) {
+    aviao.position.x += 2;
+
+    if (aviao.position.z < -1000) {
+      aviao.position.z = 5000;
+    }
   }
 }
 
